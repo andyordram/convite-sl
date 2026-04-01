@@ -1,8 +1,8 @@
 export default async function handler(req, res) {
-  const { nome, data, local } = req.query;
+  const { nome = "Nome", data = "Data", local = "Local" } = req.query;
 
   const text = `
-  <svg width="1024" height="1024">
+  <svg width="1024" height="1024" xmlns="http://www.w3.org/2000/svg">
     <style>
       .title { fill: black; font-size: 40px; font-family: Arial; }
     </style>
@@ -14,5 +14,5 @@ export default async function handler(req, res) {
   `;
 
   res.setHeader("Content-Type", "image/svg+xml");
-  res.send(text);
+  res.status(200).send(text);
 }
