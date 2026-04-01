@@ -1,66 +1,82 @@
-// api/generate.js
-// Backend para gerar convite dinâmico em SVG
-
 export default async function handler(req, res) {
-  // Extrai todos os 7 parâmetros da URL
-  // Adiciona valores padrão se algum parâmetro estiver faltando
-  const { 
-    noiva = "Nome da Noiva", 
-    noivo = "Nome do Noivo", 
-    data = "Data", 
-    horario = "Horário", 
-    local = "Nome do Local", 
-    tipolocal = "castelo/templo/salão", 
-    rsvplimite = "Data Limite" 
+  const {
+    noiva = "Nome da Noiva",
+    noivo = "Nome do Noivo",
+    data = "31/10/2026",
+    horario = "20:00",
+    tipolocal = "Castelo",
+    local = "Salão Principal",
+    rsvplimite = "15/10/2026"
   } = req.query;
 
-  // Design SVG baseado na imagem de referência
-  // Fundo cinza escuro, bordas ornamentadas, selo de cera e texto roxo
   const svg = `
   <svg width="1024" height="1024" xmlns="http://www.w3.org/2000/svg">
-    <rect width="1024" height="1024" fill="#1C1C1C" />
-
-    <path d="M50 50 L974 50 L974 974 L50 974 Z" fill="none" stroke="#673AB7" stroke-width="4" stroke-dasharray="10 5" />
-    <path d="M65 65 L959 65 L959 959 L65 959 Z" fill="none" stroke="#673AB7" stroke-width="2" />
-    
-    <circle cx="100" cy="100" r="5" fill="#673AB7" />
-    <circle cx="924" cy="100" r="5" fill="#673AB7" />
-    <circle cx="924" cy="924" r="5" fill="#673AB7" />
-    <circle cx="100" cy="924" r="5" fill="#673AB7" />
-    <path d="M100 800 L200 900" stroke="#673AB7" stroke-width="3" />
-    <path d="M924 800 L824 900" stroke="#673AB7" stroke-width="3" />
-
-    <circle cx="512" cy="150" r="80" fill="#673AB7" stroke="#D4AF37" stroke-width="5" />
-    <path d="M512 80 L512 220" stroke="#D4AF37" stroke-width="5" fill="none" />
-    <circle cx="512" cy="165" r="40" fill="none" stroke="#D4AF37" stroke-width="5" />
-    <path d="M472 165 L512 110 L552 165 L472 165 Z" fill="none" stroke="#D4AF37" stroke-width="5" />
-
     <style>
-      .text-base { font-family: 'Georgia', serif; fill: #673AB7; text-anchor: middle; font-size: 40px; }
-      .text-gold { fill: #D4AF37; }
-      .names { font-family: 'Times New Roman', serif; font-weight: bold; font-size: 80px; text-anchor: middle; fill: #673AB7; }
-      .accent { fill: #673AB7; font-size: 60px; text-anchor: middle; }
+      @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display&display=swap');
+
+      .titulo {
+        font-family: 'Playfair Display', serif;
+        font-size: 36px;
+        fill: #8B6B4A;
+        letter-spacing: 3px;
+      }
+
+      .nomes {
+        font-family: 'Great Vibes', cursive;
+        font-size: 80px;
+        fill: #000;
+      }
+
+      .detalhe {
+        font-family: 'Playfair Display', serif;
+        font-size: 28px;
+        fill: #444;
+      }
+
+      .rodape {
+        font-size: 20px;
+        fill: #666;
+      }
     </style>
 
-    <text x="512" y="320" class="text-base">Por ordem do destino e bênção das estrelas,</text>
-    <text x="512" y="380" class="text-base">temos a honra de convidar-vos para testemunhar</text>
-    <text x="512" y="440" class="text-base">a união de duas almas encantadas:</text>
+    <!-- Fundo -->
+    <rect width="100%" height="100%" fill="#f7f3ef"/>
 
-    <text x="512" y="550" class="names">${noiva}</text>
-    <text x="512" y="630" class="accent">&amp;</text>
-    <text x="512" y="730" class="names">${noivo}</text>
+    <!-- Moldura -->
+    <rect x="40" y="40" width="944" height="944" fill="none" stroke="#c9b8a6" stroke-width="3"/>
 
-    <text x="512" y="850" class="text-base text-gold">Em um ritual de amor e magia que acontecerá</text>
-    <text x="512" y="900" class="text-base text-gold">em ${data}, as ${horario}, no ${tipolocal}</text>
-    <text x="512" y="940" class="text-base text-gold">[${local}]</text>
-    
-    <text x="512" y="1000" class="text-base">Prepare sua varinha, sua capa e seu coração.</text>
-    <text x="512" y="1060" class="text-base">RSVP até ${rsvplimite}</text>
+    <!-- Título -->
+    <text x="50%" y="150" text-anchor="middle" class="titulo">
+      Você está convidado para o casamento de
+    </text>
+
+    <!-- Nomes -->
+    <text x="50%" y="350" text-anchor="middle" class="nomes">
+      ${noiva} &amp; ${noivo}
+    </text>
+
+    <!-- Data -->
+    <text x="50%" y="500" text-anchor="middle" class="detalhe">
+      ${data} às ${horario}
+    </text>
+
+    <!-- Local -->
+    <text x="50%" y="580" text-anchor="middle" class="detalhe">
+      ${tipolocal} - ${local}
+    </text>
+
+    <!-- RSVP -->
+    <text x="50%" y="750" text-anchor="middle" class="rodape">
+      Confirme presença até ${rsvplimite}
+    </text>
+
+    <!-- Linha decorativa -->
+    <line x1="300" y1="420" x2="724" y2="420" stroke="#c9b8a6" stroke-width="2"/>
+    <line x1="300" y1="460" x2="724" y2="460" stroke="#c9b8a6" stroke-width="2"/>
 
   </svg>
   `;
 
-  // Define o tipo de resposta como imagem SVG e envia o código
   res.setHeader("Content-Type", "image/svg+xml");
-  res.status(200).send(svg);
+  res.send(svg);
 }
