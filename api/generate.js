@@ -50,9 +50,9 @@ export default async function handler(req, res) {
       Você está convidado para o casamento de
     </text>
 
-    <!-- Nomes -->
     <text x="50%" y="350" text-anchor="middle" class="nomes">
-      ${noiva} &amp; ${noivo}
+  ${noiva} &amp; ${noivo}
+</text>
     </text>
 
     <!-- Data -->
